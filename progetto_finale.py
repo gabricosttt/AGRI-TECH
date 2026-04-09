@@ -2,11 +2,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split   # FIX 1: aggiunto import mancante
+from sklearn.metrics import accuracy_score, confusion_matrix  # FIX 2: aggiunto import mancante
 
 np.random.seed(42)
-
-import numpy as np
-import pandas as pd
 
 n = 200
 umidita = np.random.uniform(10, 80, n)
@@ -15,10 +14,8 @@ ore_secco = np.random.uniform(0, 72, n)
 
 irrigare = ((umidita < 35) & (temp > 28) & (ore_secco > 24)).astype(int)
 
-# Creazione del DataFrame
 df = pd.DataFrame({'umidita': umidita, 'temp': temp, 'ore_secco': ore_secco, 'irrigare': irrigare})
 
-# Stampe richieste
 print(f"Numero di letture totali: {len(df)}")
 print(f"Zone da irrigare (1) e non (0):\n{df['irrigare'].value_counts()}")
 print(f"Prime 4 righe del DataFrame:\n{df.head(4)}")
@@ -54,10 +51,7 @@ modello = RandomForestClassifier(n_estimators=50, random_state=42)
 modello.fit(X_train, y_train)
 y_pred = modello.predict(X_test)
 
-print(f"{accuracy_score(y_test, y_pred)*100:.1f}%")
-
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
+print(f"Accuratezza del modello: {accuracy_score(y_test, y_pred)*100:.1f}%")  # FIX 3: aggiunta etichetta descrittiva
 
 cm = confusion_matrix(y_test, y_pred)
 
@@ -76,13 +70,12 @@ thresh = cm.max() / 2
 for i in range(2):
     for j in range(2):
         color_text = 'white' if cm[i, j] > thresh else 'black'
-        ax.text(j, i, str(cm[i, j]), 
-                ha='center', va='center', 
-                fontsize=18, fontweight='bold', 
+        ax.text(j, i, str(cm[i, j]),
+                ha='center', va='center',
+                fontsize=18, fontweight='bold',
                 color=color_text)
-      
-plt.savefig('eco_monitor_risultati.png', dpi=120, bbox_inches='tight')
 
+plt.savefig('eco_monitor_risultati.png', dpi=120, bbox_inches='tight')
 plt.show()
 print("Grafico salvato correttamente come eco_monitor_risultati.png")
 
